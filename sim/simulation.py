@@ -33,6 +33,7 @@ energy_per_hour = {
 
 def run_sim():
     # Create households
+    # TODO: Change the parameters to be more realistic (if it comes to daily kWh usage and bank properties)
     household_pure = Household(20, 0, 0, 0, 0)
     household1 = Household(20, 50, 10, 10, 25)
     household2 = Household(20, 100, 10, 10, 50)
