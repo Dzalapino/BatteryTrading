@@ -1,7 +1,6 @@
 import pandas as pd
 from household import Household
 import data.data_scrapper as data
-import time
 
 # Percentage of the daily energy usage that the household will use per hour
 energy_per_hour = {
@@ -33,11 +32,8 @@ energy_per_hour = {
 
 
 def run_sim():
-    """
-
-    :return:
-    """
     # Create households
+    household_pure = Household(20, 0, 0, 0, 0)
     household1 = Household(20, 50, 10, 10, 25)
     household2 = Household(20, 100, 10, 10, 50)
     householdTrading1 = Household(20, 50, 10, 10, 25)
@@ -96,36 +92,37 @@ def run_sim():
             price_h = df_day['Kurs'].iloc[j]
             energy_usage_h = energy_per_hour[j]
             if energy_usage[j] == "buy":
-                for household in [household1, household2, householdTrading1, householdTrading2]:
-                    charged = household.energy_bank.charge()
+                for household in [household_pure, household1, household2, householdTrading1, householdTrading2]:
+                    charged = household.energy_bank_charge()
                     household.update_cash_balance(-price_h * energy_usage_h * household.daily_energy_usage)
                     household.update_cash_balance(-price_h * charged)
 
             elif energy_usage[j] == "sell":
-                for household in [household1, household2, householdTrading1, householdTrading2]:
+                for household in [household_pure, household1, household2, householdTrading1, householdTrading2]:
                     energy_for_household = household.daily_energy_usage * energy_usage_h
-                    discharged = household.energy_bank.discharge_amount(energy_for_household)
+                    discharged = household.energy_bank_discharge_amount(energy_for_household)
                     energy_for_household -= discharged
                     if energy_for_household > 0:
                         household.update_cash_balance(-price_h * energy_for_household)
                     if household in [householdTrading1, householdTrading2]:
-                        discharged = household.energy_bank.discharge()
+                        discharged = household.energy_bank_discharge()
                         household.update_cash_balance(price_h * discharged)
 
             else:
-                for household in [household1, household2, householdTrading1, householdTrading2]:
-                    if household.energy_bank.get_energy_percentage() < 0.05:
-                        charged = household.energy_bank.charge()
+                for household in [household_pure, household1, household2, householdTrading1, householdTrading2]:
+                    if household.get_energy_bank_energy_percentage() < 0.05:
+                        charged = household.energy_bank_charge()
                         household.update_cash_balance(-price_h * charged)
                     elif household.energy_bank.get_energy_percentage() > 0.95 and household in [householdTrading1, householdTrading2]:
-                        discharged = household.energy_bank.discharge()
+                        discharged = household.energy_bank_discharge()
                         household.update_cash_balance(price_h * discharged)
                     energy_for_household = household.daily_energy_usage * energy_usage_h
-                    discharged = household.energy_bank.discharge_amount(energy_for_household)
+                    discharged = household.energy_bank_discharge_amount(energy_for_household)
                     energy_for_household -= discharged
                     if energy_for_household > 0:
                         household.update_cash_balance(-price_h * energy_for_household)
 
+    print("Household Pure cash balance: ", household_pure.get_cash_balance())
     print("Household 1 cash balance: ", household1.get_cash_balance())
     print("Household 2 cash balance: ", household2.get_cash_balance())
     print("Household Trading 1 cash balance: ", householdTrading1.get_cash_balance())

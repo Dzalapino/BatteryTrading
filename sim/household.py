@@ -21,20 +21,33 @@ class Household:
         )
         self.cash_balance = 0
 
-    def charge_energy_bank(self, amount: float):
-        self.energy_bank.charge(amount)
 
-    def discharge_energy_bank(self, amount: float):
-        self.energy_bank.discharge(amount)
+    def energy_bank_charge(self):
+        return self.energy_bank.charge()
 
-    def get_energy_bank_energy(self):
-        return self.energy_bank.get_energy()
+
+    def energy_bank_charge_amount(self, amount: float):
+        return self.energy_bank.charge_amount(amount)
+
+
+    def energy_bank_discharge(self):
+        return self.energy_bank.discharge()
+
+
+    def energy_bank_discharge_amount(self, amount: float):
+        return self.energy_bank.discharge_amount(amount)
+
+    def get_energy_bank_energy_percentage(self):
+        return self.energy_bank.get_energy_percentage()
+
 
     def get_daily_energy_usage(self):
         return self.daily_energy_usage
 
+
     def get_cash_balance(self):
         return self.cash_balance
+
 
     def update_cash_balance(self, amount: float):
         self.cash_balance += amount

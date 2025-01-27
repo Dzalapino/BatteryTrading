@@ -58,4 +58,6 @@ class EnergyBank:
         Get the percentage of energy stored in the energy bank
         :return: the percentage of energy stored
         """
+        if self.capacity == 0:
+            return 0
         return self.energy / self.capacity
